@@ -10,7 +10,11 @@ import java.util.Objects;
 public class Main {
     private static final String exceptionMessage = "throws Exception";
 
-    public static void main(String[] args) { }
+    public static void main(String[] args) {
+        if (args == null || args.length == 0) System.out.println(exceptionMessage);
+        System.out.println(calc(args[0]));
+    }
+    
     public static String calc(String input) {
         var intParser = new IntegerParser();
         var romanParser = new RomanParser();

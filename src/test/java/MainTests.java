@@ -1,10 +1,8 @@
 import core.Main;
+import core.calculations.exceptions.*;
+import core.calculations.parsers.exceptions.*;
 import org.junit.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 
 public class MainTests {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -20,25 +18,18 @@ public class MainTests {
         System.setOut(originalOut);
     }
 
-
     @Test
-    public void sampleTests() {
-        var result1 = Main.calc("1 + 2");
-        var result2 = Main.calc("VI / III");
-        var result3 = Main.calc("I - II");
-        var result4 = Main.calc("I + 1");
-        var result5 = Main.calc("1");
-        var result6 = Main.calc("1 + 2 + 3");
-        Assert.assertEquals("3", result1);
-        Assert.assertEquals("II", result2);
-        Assert.assertEquals("throws Exception", result3);
-        Assert.assertEquals("throws Exception", result4);
-        Assert.assertEquals("throws Exception", result5);
-        Assert.assertEquals("throws Exception", result6);
+    public void sampleTests() throws CalculationException, ParseException {
+        Assert.assertEquals("3", Main.calc("1 + 2"));
+        Assert.assertEquals("II", Main.calc("VI / III"));
+        Assert.assertThrows(ParseException.class, () -> Main.calc("I - II"));
+        Assert.assertThrows(ParseException.class, () -> Main.calc("I + 1"));
+        Assert.assertThrows(NoOperationException.class, () -> Main.calc("1"));
+        Assert.assertThrows(ParseException.class, () -> Main.calc("1 + 2 + 3"));
     }
 
     @Test
-    public void mainWithArgsTest() {
+    public void mainWithArgsTest() throws CalculationException, ParseException {
         String[] given = new String[] { "2+2" };
         String expected = "4";
         Main.main(given);
@@ -47,7 +38,7 @@ public class MainTests {
     }
 
     @Test
-    public void mainWithConsoleInputTest() {
+    public void mainWithConsoleInputTest() throws CalculationException, ParseException {
         InputStream given = new ByteArrayInputStream("2+2".getBytes());
         System.setIn(given);
         String expected = "4";
